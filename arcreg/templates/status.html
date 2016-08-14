@@ -1,0 +1,48 @@
+{% extends "base_al.html" %}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-6 col-sm-6" style="text-align: left;text-transform: capitalize;">
+	<p><b>{{stuobj.name}}</b></p></div>
+	<div class="col-md-6 col-sm-6" style="text-align: right;">
+		<p><b>{{stuobj.ID_no}}</b></p>
+	</div>
+</div>
+<br>
+
+<div class="table-responsive">
+            <table class="table table-bordered table-hover table-striped">
+              <thead>
+                <tr>
+                  <th>Course Title</th>
+                  <th>Lecture No.</th>
+                  <th>Tutorial No.</th>
+                  <th>Practical No.</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for i in add %}
+                <tr>
+                  <td>{{i.course_title}}</td>
+                  <td>{{i.lecture_no}}</td>
+                  <td>{{i.tutorial_no}}</td>
+                  <td>{{i.practical_no}}</td>
+                  <td>Requested For Addition</td>
+                </tr>
+                {% endfor %}
+               {% for i in remove %}
+                <tr>
+                 <td>{{i.course_title}}</td>
+	             <td>{{i.lecture_no}}</td>
+	             <td>{{i.tutorial_no}}</td>
+	             <td>{{i.practical_no}}</td>
+	             <td>Requested For Removal</td>
+                </tr>
+                {% endfor %}
+                
+              </tbody>
+            </table>
+          </div>
+
+{% endblock %}

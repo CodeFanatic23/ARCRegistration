@@ -1,0 +1,48 @@
+{% extends "base_al.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container" style="margin-top: -30px;border: 1px dotted black;border-radius: 5px;">
+
+<div class="col-md-8">
+   <h2 style="">INSTRUCTIONS</h2><hr>
+   {% for a,b in instructions %}
+   <p>{{a}}){{b}}</p>
+   {% endfor %}
+</div>
+
+<div class="col-md-4"  style="padding: 10px;">
+<form method="POST" id="info_form" action="">{% csrf_token %}
+    {{general|crispy}}
+    <input class="btn btn-primary" if="sub" type="submit" value="Submit">
+  </form>
+
+</div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    
+    $(document).ready(function() {
+    $('#info_form').submit(function() { // catch the form's submit event
+        $.ajax({ // create an AJAX call...
+            data: $(this).serialize(), // get the form data
+            type: $(this).attr('method'), // GET or POST
+            url: '/home/', // the file to call
+            success: function(data) { // on success..
+                window.location.reload(true);
+                
+            },
+            error: function(e, x, r) { // on error..
+              window.location.reload(true);
+                $('#err').html(e); // update the DIV
+            }
+        });
+      return false;
+    });
+});
+</script>
+
+{% endblock %}

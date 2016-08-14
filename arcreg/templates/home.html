@@ -1,0 +1,89 @@
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>ERP Course Substitution System</title>
+  <meta name="description" content="Add or Remove Courses for Current Semester">
+  <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/static/css/style.min.css">
+  <link rel="stylesheet" href="/static/css/bootstrap.css">
+</head>
+<body>
+
+<div id="o-wrapper" class="o-wrapper">
+
+  <header class="o-header">
+    <nav class="o-header-nav">
+    <button id="c-button--slide-right" class="c-button" style="z-index: 90;color: white;font-size: 1.5em;"> <i class="fa fa-bars"></i>MENU</button>
+    <a href="{% url 'auth_logout' %}"><button id="c-button--slide-left" class="c-button" style="z-index: 90;color: white;font-size: 1.5em;" ><i class="fa fa-arrow"></i>Logout</button></a>
+     
+    </nav>
+    <div class="o-container">
+      <h1 class="o-header__title"></h1>
+    </div>
+  </header><!-- /o-header -->
+
+  <main class="o-content">
+    <div class="o-container">
+    <div class="col-md-6"
+      <form method="POST" action="">{% csrf_token %}
+        {{add|crispy}}
+        <input class="btn-btn-primary" type="submit" value="ADD">
+      </form>
+      </div>
+      <div class="col-md-6">
+      <form method="POST" action="">{% csrf_token %}
+        {{remove|crispy}}
+         <input class="btn-btn-primary" type="submit" value="Remove">
+      </form>
+      </div>
+      
+    </div><!-- /o-container -->
+  </main><!-- /o-content -->
+
+  
+</div><!-- /o-wrapper -->
+
+<nav id="c-menu--slide-right" class="c-menu c-menu--slide-right">
+  <button class="c-menu__close">Close Menu &rarr;</button>
+  <ul class="c-menu__items">
+    <li class="c-menu__item"><a href="#" class="c-menu__link">Home</a></li>
+    <li class="c-menu__item"><a href="#" class="c-menu__link">About</a></li>
+    <li class="c-menu__item"><a href="#" class="c-menu__link">Services</a></li>
+    <li class="c-menu__item"><a href="#" class="c-menu__link">Work</a></li>
+    <li class="c-menu__item"><a href="{% url 'auth_logout' %}" class="c-menu__link">Logout</a></li>
+  </ul>
+</nav><!-- /c-menu slide-right -->
+
+
+<div id="c-mask" class="c-mask"></div><!-- /c-mask -->
+
+<!-- menus script -->
+<script src="/static/js/dist/menu.js"></script>
+<script>
+
+  
+  /**
+   * Slide right instantiation and action.
+   */
+  var slideRight = new Menu({
+    wrapper: '#o-wrapper',
+    type: 'slide-right',
+    menuOpenerClass: '.c-button',
+    maskId: '#c-mask'
+  });
+
+  var slideRightBtn = document.querySelector('#c-button--slide-right');
+  
+  slideRightBtn.addEventListener('click', function(e) {
+    e.preventDefault;
+    slideRight.open();
+  });
+
+</script>
+
+
+</body>
+</html>

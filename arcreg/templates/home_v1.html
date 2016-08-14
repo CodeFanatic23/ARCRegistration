@@ -1,0 +1,124 @@
+{% load crispy_forms_tags %}
+<!DOCTYPE html> 
+<html lang="en" style="height:100%;">
+    <head> 
+        <meta charset="utf-8"> 
+        <title>Maxim - One Page HTML5 Template</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1"> 
+        <meta name="keywords" content="" />
+        <meta name="description" content="" />
+        <link rel="shortcut icon" href="ico/favicon.png"> 
+        <!-- Core CSS -->         
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet"> 
+        <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+        <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,500,600,700,900,' rel='stylesheet' type='text/css'>
+        
+        <!-- Style Library -->         
+        <link href="/static/css/style.css" rel="stylesheet">
+        <link href="/static/css/plugins.css" rel="stylesheet">
+        <link href="/static/css/components.css" rel="stylesheet">
+        <link href="/static/css/custom.css" rel="stylesheet">
+        <link rel="stylesheet" href="/static/css/settings.css" type="text/css" media="screen">    
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/js/ajax.js"></script>   
+ 
+    </head>     
+    <body>
+        <header id="header" class="soft-scroll header">
+        <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+     <div class="navbar-header">
+                            <img src="/static/img/logo.png" alt="logo" class="brand-img img-responsive">
+                    </div>
+      <a class="navbar-brand" href="#">WebSiteName</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Home</a></li>
+      <li><a href="#">Page 1</a></li>
+      <li><a href="#">Page 2</a></li> 
+      <li><a href="#">Page 3</a></li> 
+    </ul>
+  </div>
+</nav>
+           
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                   
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <!-- <div>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="nav-item"><a href="#home">Home</a></li>
+                            <li class="nav-item"><a href="#about">About Us</a></li>
+                            <li class="nav-item"><a href="#services">Services</a></li>
+                            <li class="nav-item"><a href="#portfolio">Portfolio</a></li>
+                            <li class="nav-item"><a href="#team">Our Team</a></li>
+                            <li class="nav-item"><a href="#pricing">Pricing</a></li>                        
+                            <li class="nav-item"><a href="#contact-us">Contact</a></li>
+                        </ul>
+                    </div> -->
+                    <!-- /.navbar-collapse -->
+                </div>
+                <!-- /.container-fluid -->
+      
+        </header>
+        <div id="home"></div>
+       
+        <section id="intro" class="content-block-nopad services">
+            <div class="container">
+                <div class="col-sm-12">
+                    <div class="underlined-title">
+                        <h1>Welcome To Maxim</h1>
+                        <div class="ajax-insert">
+                            
+                        </div>
+                        <hr>
+                        <h2>ADD or REMOVE COURSES</h2>
+                    </div>
+                </div>
+            </div>
+            <div id="about"></div>
+        </section>
+        <section id="content-left" class="content-block content-left">
+            <div class="image-container col-sm-6 col-xs-12 pull-right">
+                <div class="background-image-holder">
+</div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6 col-xs-12 content pull-left">
+                        <!-- <h3>About Us</h3>
+                        <p>yolo</p> -->
+                        <div class="col-md-6">
+      <form method="POST" action="">{% csrf_token %}
+        {{add|crispy}}
+        <input class="btn-btn-primary" type="submit" value="ADD" onclick="insert()">
+      </form>
+      </div>
+      <button>CLick me</button>
+      <p>change my content</p>
+    </div>
+     <br><br><br><br>
+    <form method="POST" action="">{% csrf_token %}
+        {{remove|crispy}}
+         <input class="btn-btn-primary" type="submit" value="Remove">
+      </form>
+                    </div>
+                </div>
+                <!-- /.row-->
+            </div>
+            <!-- /.container -->
+        </section>
+    
+    <div class="container">
+        <p class="pull-left small">© ERP|BITS,Pilani GOA 2016 - <a href="" target="_blank"></a></p>
+    </div>
+</div>
+        <!-- jQuery -->
+		<script type="text/javascript" src="/static/js/jquery-2.1.1.min.js"></script>         
+        <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>         
+        <script type="text/javascript" src="/static/js/plugins.js"></script>
+        <script type="text/javascript" src="/static/js/bskit-scripts.js"></script>
+
+    
+</body>     
+</html>

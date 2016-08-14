@@ -1,0 +1,12 @@
+{% extends "registration/registration_base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% trans "Logged out" %}{% endblock %}
+
+{% block content %}
+<p style="text-align: center;">{% trans "Successfully logged out" %}.</p>
+<br>
+<p><button class="btn btn-danger" onclick="window.location='{% url 'auth_login' %}';">{% trans "Log In Again" %}</a>.
+
+{% endblock %}
