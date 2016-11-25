@@ -284,6 +284,6 @@ class Create_database():
 		self.create_FD_priority_number(request)
 		self.create_HD_priority_number(request)
 		self.create_Time_Table_Semester_Wise(request)
-		self.create_Pre_requisite_senate_database(request)
+		#self.create_Pre_requisite_senate_database(request)
 		# self.create_Elective_list(request)
 		self.create_Registration_data(request)

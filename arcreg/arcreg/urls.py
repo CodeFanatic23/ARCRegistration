@@ -21,10 +21,14 @@ from blueslip.views import *
 
 
 urlpatterns = [
-    url(r'^arcbitscp/', admin.site.urls),
+    url(r'^admin/', admin.site.urls),
     url(r'^home/$', home, name='home'),
+    url(r'^2638hjsbd3245347/$', clash, name='clash'),
+    url(r'^home/tt/$', timetable, name='tt'),
     url(r'^update/$', update, name='update'),
     url(r'^submit/$', submit, name='submit'),
+    url(r'^home/(?P<id>\d+)/adelete/$', adelete, name='adelete'),
+    url(r'^home/(?P<id>\d+)/rdelete/$', rdelete, name='rdelete'),
     url(r'^add/$', add, name='add'),
     url(r'^remove/$', remove, name='remove'),
     url(r'^status/$', status, name='status'),
@@ -32,8 +36,8 @@ urlpatterns = [
  	url(r'',include('registration.backends.simple.urls')),
 ]
 
-admin.site.site_header = 'ARC| Administration'
-admin.site.site_title = 'ARC BITS Pilani K.K. Birla Goa Campus'
+admin.site.site_header = 'Your Header'
+admin.site.site_title = 'Your Title'
 admin.site.index_title = 'ADMIN'
 
 if settings.DEBUG:

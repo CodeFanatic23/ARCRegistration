@@ -33,9 +33,9 @@ class Clean_folder():
 		path, dirs, files = next(os.walk(os.path.join(path_xls_sheet,"HD_Priority_number")))
 		for f in files:	
 			self.remove_files(os.path.join(path_xls_sheet,"HD_Priority_number",f))
-		path, dirs, files = next(os.walk(os.path.join(path_xls_sheet,"Pre_requisite_senate")))
-		for f in files:	
-			self.remove_files(os.path.join(path_xls_sheet,"Pre_requisite_senate",f))
+		# path, dirs, files = next(os.walk(os.path.join(path_xls_sheet,"Pre_requisite_senate")))
+		# for f in files:	
+		# 	self.remove_files(os.path.join(path_xls_sheet,"Pre_requisite_senate",f))
 		path, dirs, files = next(os.walk(os.path.join(path_xls_sheet,"Time_Table_Semester_Wise")))
 		for f in files:	
 			self.remove_files(os.path.join(path_xls_sheet,"Time_Table_Semester_Wise",f))
@@ -67,7 +67,7 @@ class Clean_folder():
 		#Elective_list = str(re.sub(" ","_",request.FILES['Elective_list'].name))
 		FD_Priority_number = str(re.sub(" ","_",request.FILES['FD_Priority_number'].name))
 		HD_Priority_number = str(re.sub(" ","_",request.FILES['HD_Priority_number'].name))
-		Pre_requisite_senate = str(re.sub(" ","_",request.FILES['Pre_requisite_senate'].name))
+		# Pre_requisite_senate = str(re.sub(" ","_",request.FILES['Pre_requisite_senate'].name))
 		Time_Table_Semester_Wise = str(re.sub(" ","_",request.FILES['Time_Table_Semester_Wise'].name))
 		Registration_data = str(re.sub(" ","_",request.FILES['Registration_data'].name))
 		Registration_data =  str(re.sub("\)","",str(re.sub("\(","",Registration_data))))
@@ -76,7 +76,7 @@ class Clean_folder():
 		#self.move(os.path.join(path_xls_sheet,"Elective_list","temporary",Elective_list),os.path.join(path_xls_sheet,"Elective_list",Elective_list))
 		self.move(os.path.join(path_xls_sheet,"FD_Priority_number","temporary",FD_Priority_number),os.path.join(path_xls_sheet,"FD_Priority_number",FD_Priority_number))
 		self.move(os.path.join(path_xls_sheet,"HD_Priority_number","temporary",HD_Priority_number),os.path.join(path_xls_sheet,"HD_Priority_number",HD_Priority_number))
-		self.move(os.path.join(path_xls_sheet,"Pre_requisite_senate","temporary",Pre_requisite_senate),os.path.join(path_xls_sheet,"Pre_requisite_senate",Pre_requisite_senate))
+		# self.move(os.path.join(path_xls_sheet,"Pre_requisite_senate","temporary",Pre_requisite_senate),os.path.join(path_xls_sheet,"Pre_requisite_senate",Pre_requisite_senate))
 		self.move(os.path.join(path_xls_sheet,"Time_Table_Semester_Wise","temporary",Time_Table_Semester_Wise),os.path.join(path_xls_sheet,"Time_Table_Semester_Wise",Time_Table_Semester_Wise))
 		self.move(os.path.join(path_xls_sheet,"Registration_data","temporary",Registration_data),os.path.join(path_xls_sheet,"Registration_data",Registration_data))
 

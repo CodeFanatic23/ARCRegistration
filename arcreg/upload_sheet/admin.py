@@ -9,18 +9,8 @@ from django.shortcuts import render
 
 # Register your models here.
 class UploadSheetAdmin(admin.ModelAdmin):
-	list_display = ['disp']
+	list_display = ['Capacity', 'FD_Priority_number', 'HD_Priority_number', 'Pre_requisite_senate', 'Time_Table_Semester_Wise','Registration_data',]
 	# list_editable = ["event_name"]
-
-	def disp(self,obj):
-		return "Upload Files"
-
-	def has_add_permission(self,request):
-		if self.model.objects.count() >= 1:
-			return False
-		else:
-			return True
-
 	form = UploadSheetForm
 
 

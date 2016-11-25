@@ -7,6 +7,8 @@ from django.core.mail import EmailMessage
 from django.conf import settings
 from django.db import transaction,IntegrityError
 from django.utils.encoding import python_2_unicode_compatible
+from django.template.loader import render_to_string
+from django.core.mail import get_connection, EmailMultiAlternatives
 import string
 import random
 
@@ -25,6 +27,8 @@ class Add(models.Model):
 	lecture_no = models.CharField(max_length = 2, blank = False, default=0)
 	tutorial_no = models.CharField(max_length = 2,blank = False, default=0)
 	practical_no = models.CharField(max_length = 2,blank = False, default=0)
+	userid = models.CharField(max_length=20,blank=False,default='-1')
+	updated = models.BooleanField(default=False)
 
 	class Meta:
 		verbose_name_plural = "Additions"
@@ -40,11 +44,14 @@ class Remove(models.Model):
 	lecture_no = models.CharField(max_length = 2, blank = False, default=0)
 	tutorial_no = models.CharField(max_length = 2,blank = False, default=0)
 	practical_no = models.CharField(max_length = 2,blank = False, default=0)
+	userid = models.CharField(max_length=20,blank=False,default='-1')
+	updated = models.BooleanField(default=False)
 
 	class Meta:
 		verbose_name_plural = "Removals"
 
 
+@python_2_unicode_compatible
 class Registered_User(models.Model):
 	user = models.OneToOneField(User,related_name='add_or_remove') 
 	semester = models.DecimalField(max_digits = 1, decimal_places = 0, null = True, blank = False)
@@ -55,7 +62,6 @@ class Registered_User(models.Model):
 	# prev_message = models.CharField(max_length=500,blank=True,null=True,default="Hello!")
 	message_status = models.BooleanField(default=False)
 	submit_status = models.BooleanField(default=False)
-
 	class Meta:
 		verbose_name_plural = "Registered Users"
 
@@ -69,7 +75,7 @@ class Checks(models.Model):
 class Instruction(models.Model):
 	instruction = models.CharField(max_length=200,blank=True,null=True)
 
-
+@python_2_unicode_compatible
 class Generated_User(models.Model):
 	usrname = models.CharField(max_length=30,blank=False,null=True)
 	pwd = models.CharField(max_length=10,blank=False,null=True)
@@ -84,6 +90,9 @@ class Generate_User(models.Model):
 
 	class Meta:
 		verbose_name_plural = "Generate new users"
+
+
+
 @python_2_unicode_compatible
 class Control(models.Model):
 	disable_checks = models.BooleanField(default=False,verbose_name='Disable')
@@ -127,8 +136,8 @@ signals.pre_save.connect(generate_users,sender=Generate_User)
 def update_email(sender,instance,**kwargs):
 	try:
 		user = instance.user
-		if user.email != "f" + instance.ID_no[0:3] + instance.ID_no[-4:-1] + "@goa.bits-pilani.ac.in":
-			user.email = "f" + instance.ID_no[0:3] + instance.ID_no[-4:-1] + "@goa.bits-pilani.ac.in"
+		if user.email != "f" + instance.ID_no[0:4] + instance.ID_no[-4:-1] + "@goa.bits-pilani.ac.in":
+			user.email = "f" + instance.ID_no[0:4] + instance.ID_no[-4:-1] + "@goa.bits-pilani.ac.in"
 			user.first_name = instance.name
 			user.save()
 
@@ -136,36 +145,17 @@ def update_email(sender,instance,**kwargs):
 			pass
 
 		else:
-			subject = "ARC BLUESLIP"
-			from_email = settings.EMAIL_HOST_USER
-			to_email = [user.email]
-			print("To Email:",to_email)
-			print("From:",from_email)
+			connection = get_connection() # uses SMTP server specified in settings.py
+			connection.open()
+			contact_message = render_to_string('message.html',{'name':instance.name,'message':instance.message,'id':instance.ID_no})
 
-			text = "This is a test message.\nText and html."
-			html = """
-			<html>
-			  <head></head>
-			  <body>
-			  <div style="background-color:#200;">
-			    <p>This is a test message.</p>
-			    <img src = "https://www.google.co.in/logos/doodles/2016/r-d-burmans-77th-birthday-4882888807940096.2-hp.png" alt="image">
-			    <br>
-			    <p>Text and HTML</p>
-			    </div>
-			  </body>
-			</html>
-			"""
-
-			contact_message ="Dear,\n %s,%sFrom:\n %s \tcontact:%s"%(
-				instance.name, 
-				instance.message, 
-				from_email,
-				str("ARC_CONTACT"),)
-			msg = EmailMessage(subject,contact_message,to=to_email)
-			msg.send()
-			msg.attach(content=text,mimetype='text/html')
-			msg.attach(content=html,mimetype='text/html')
+			email = EmailMultiAlternatives(subject="ARC Registration", body=contact_message,from_email=settings.DEFAULT_FROM_EMAIL, to=[user.email], connection=connection)
+			email.attach_alternative(contact_message, "text/html")
+			email.sub_content_type = "html"
+			email.send()
+			connection.close()
+			print("sent!")
+			
 
 	except Exception as e:
 		print(e)

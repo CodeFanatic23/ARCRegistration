@@ -1,10 +1,11 @@
 {% extends "base_al.html" %}
 
 {% block content %}
+
 <div class="row">
-	<div class="col-md-6 col-sm-6" style="text-align: left;text-transform: capitalize;">
+	<div class="col-md-6 col-sm-6 col-xs-6" style="text-align: left;text-transform: capitalize;">
 	<p><b>{{stuobj.name}}</b></p></div>
-	<div class="col-md-6 col-sm-6" style="text-align: right;">
+	<div class="col-md-6 col-sm-6 col-xs-6" style="text-align: right;">
 		<p><b>{{stuobj.ID_no}}</b></p>
 	</div>
 </div>
@@ -19,6 +20,7 @@
                   <th>Tutorial No.</th>
                   <th>Practical No.</th>
                   <th>Status</th>
+                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -29,6 +31,7 @@
                   <td>{{i.tutorial_no}}</td>
                   <td>{{i.practical_no}}</td>
                   <td>Requested For Addition</td>
+                  <td align="center"><a href="{% url 'home' %}{{i.id}}/adelete/"><span><i class="fa fa-times"></i></span></a></td>
                 </tr>
                 {% endfor %}
                {% for i in remove %}
@@ -38,6 +41,7 @@
 	             <td>{{i.tutorial_no}}</td>
 	             <td>{{i.practical_no}}</td>
 	             <td>Requested For Removal</td>
+               <td align="center"><a href="{% url 'home' %}{{i.id}}/rdelete/"><span><i class="fa fa-times"></i></span></a></td>
                 </tr>
                 {% endfor %}
                 

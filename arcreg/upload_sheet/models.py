@@ -9,10 +9,7 @@ class Upload_file(models.Model):
 	Pre_requisite_senate = models.FileField(upload_to='xls_sheets/Pre_requisite_senate/temporary', blank=False, null=False)
 	Time_Table_Semester_Wise = models.FileField(upload_to='xls_sheets/Time_Table_Semester_Wise/temporary', blank=False, null=False)
 	Registration_data = models.FileField(upload_to='xls_sheets/Registration_data/temporary', blank=False, null=False)
-
-	class Meta:
-		verbose_name_plural = "Upload Files"
-
+	# nikhil_data = models.FileField(upload_to='xls_sheets/nikhil_data/temporary', blank=False, null=False)
 
 class Capacity(models.Model):
 	Course_id = models.IntegerField(null=False)
@@ -93,3 +90,12 @@ class Registration_data(models.Model):
 	Thesis_section = models.CharField(max_length=5,null=True,blank=True)
 	Graded_Component = models.CharField(max_length=5,null=True,blank=True)
 	Grade_In = models.CharField(max_length=5,null=True,blank=True)
+
+# class nikhil(models.Model):
+# 	one = models.IntegerField(null=True,blank=True)
+# 	two = models.IntegerField(null=True,blank=True)
+# 	three = models.IntegerField(null=True,blank=True)
+# 	four = models.IntegerField(null=True,blank=True)
+# 	five = models.IntegerField(null=True,blank=True)
+# 	six = models.IntegerField(null=True,blank=True)
+# 	seven = models.IntegerField(null=True,blank=True)

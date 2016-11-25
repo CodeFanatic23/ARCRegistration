@@ -1,0 +1,58 @@
+{% extends "base_al.html" %}
+{% block content %}
+<!-- <table>
+{% for i,j in combined.items %}
+<thead>
+<tr>
+	<th>{{i}}</th>
+	</tr>
+	</thead>
+	{% for k in j %}
+	<tbody>
+	{% for o in k %}
+	<tr>
+		<td>{{o}}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+	{% endfor %}
+
+{% endfor %}
+</table> -->
+<div class="table-responsive">
+            <table class="table table-bordered table-hover table-striped">
+            
+              <thead>
+                <tr>
+                  
+                  <th>Course Title</th>
+                  <th>Starts</th>
+                  <th>Ends</th>
+                  <th>Days</th>
+                  <th>Place</th>
+                  <th>Section</th>
+                  <th>Instructor</th>
+
+                </tr>
+              </thead>
+              {% for i in data %}
+              <tbody>
+             
+              <tr>
+              <td>{{i.course_title}}</td>
+              <td>{{i.mtg_start_time}}</td>
+              <td>{{i.end_time}}</td>
+              <td>{{i.class_pattern}}</td>
+              <td>{{i.room}}</td>
+              <td>{{i.Section}}</td>
+              <td>{{i.display_name}}</td>
+              	
+           
+              </tr>
+              {% endfor %}
+              </tbody>
+            
+            </table>
+          </div>
+
+{% endblock %}

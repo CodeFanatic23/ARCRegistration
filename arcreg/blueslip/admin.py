@@ -301,7 +301,7 @@ admin.site.register(Add,AddCasesAdmin)
 
 
 class UserDataAdmin(admin.ModelAdmin):
-	list_display=['name','ID_no','phone_no','semester','message']
+	list_display=['name','ID_no','phone_no','submit','message']
 	list_editable=['message']
 	search_fields = ["name","ID_no"]
 	
@@ -311,6 +311,9 @@ class UserDataAdmin(admin.ModelAdmin):
 		obj.message_status = False
 		obj.save()
 		print("Saved!")
+
+	def submit(self,obj):
+		return obj.submit_status
 		
 
 admin.site.register(Registered_User,UserDataAdmin)

@@ -15,6 +15,7 @@ $(document).ready(function() {
                 $('html, body').animate({
                     scrollTop: $("#status").offset().top
                 }, 500);
+                //$('#status').delay(5000).fadeOut(400);
     
             },
             error: function(e) { // on error..
@@ -39,7 +40,17 @@ $(document).ready(function() {
                  $('html, body').animate({
                     scrollTop: $("#status").offset().top
                 }, 500);
+                //$('#status').delay(5000).fadeOut(400);
+		$.ajax({ // create an AJAX call...
+            
+            type: 'GET', // GET or POST
+            url: '/home/', // the file to call
+            success: function(data) { // on success..
                 
+            },
+            error: function(e, x, r) { // on error..
+                           }
+        });
             },
             error: function(e, x, r) { // on error..
               window.location.reload(true);

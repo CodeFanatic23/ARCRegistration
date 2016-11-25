@@ -34,6 +34,16 @@ class GeneralForm(forms.ModelForm):
 			self.fields['ID_no'].label = "ID Number"
 			super(GeneralForm, self).__init__(*args, **kwargs)
 
+class ClashForm(forms.ModelForm):
+	
+	class Meta:
+		model = Registered_User
+		fields = ['ID_no']
+		def __init__(self,*args,**kwargs):
+			self.fields['ID_no'].label = "ID Number"
+			super(ClashForm, self).__init__(*args, **kwargs)
+
+
 class Generate_UserForm(forms.ModelForm):
 
 	no_of_users_to_generate = forms.CharField(required=True)
@@ -41,4 +51,16 @@ class Generate_UserForm(forms.ModelForm):
 	class Meta:
 		model = Generate_User
 		fields = ['no_of_users_to_generate','username_pattern']
+
+
+class RegistrationForm(forms.Form):
+    username = forms.CharField()
+    email = forms.EmailField(label="Email Address")
+    password = forms.CharField(widget=forms.PasswordInput)
+    password_confirm = forms.CharField(widget=forms.PasswordInput, label="Confirm password")
+    first_name = forms.CharField(required=False)
+    last_name = forms.CharField(required=False)
+    gender = forms.ChoiceField(choices=((None, ''), ('F', 'Female'), ('M', 'Male'), ('O', 'Other')))
+    receive_news = forms.BooleanField(required=False, label='I want to receive news and special offers')
+    agree_toc = forms.BooleanField(required=True, label='I agree with the Terms and Conditions')
 
