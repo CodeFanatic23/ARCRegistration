@@ -21,7 +21,7 @@ from blueslip.views import *
 
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^arcbitscp/', admin.site.urls),
     url(r'^home/$', home, name='home'),
     url(r'^2638hjsbd3245347/$', clash, name='clash'),
     url(r'^home/tt/$', timetable, name='tt'),
@@ -36,9 +36,9 @@ urlpatterns = [
  	url(r'',include('registration.backends.simple.urls')),
 ]
 
-admin.site.site_header = 'Your Header'
-admin.site.site_title = 'Your Title'
-admin.site.index_title = 'ADMIN'
+admin.site.site_header = 'ARC| BITS Pilani Goa'
+admin.site.site_title = 'Academic Registration'
+admin.site.index_title = 'Control Panel'
 
 if settings.DEBUG:
 	urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

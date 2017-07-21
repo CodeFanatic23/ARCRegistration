@@ -36,11 +36,17 @@ DEFAULT_FROM_EMAIL = 'yoursamplemail@gmail.com'
 #DEFAULT_TO_EMAIL = 'Default Mail TO ID'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-
+"""
+AVALIABLE THEMES
+red pink purple deeppurple indigo blue lightblue cyan teal 
+green lightgreen lime yellow amber orange deeporange brown bluegrey
+"""
+ADMIN_THEME = 'bluegrey'
 
 # Application definition
 
 INSTALLED_APPS = [
+    'material.theme.'+ ADMIN_THEME,
     'material.admin',
     'material',
     'django.contrib.admin',

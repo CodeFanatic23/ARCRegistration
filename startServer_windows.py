@@ -3,7 +3,7 @@ import subprocess
 import socket
 def startServer(port):
 	a = socket.gethostbyname(socket.gethostname())
-	p = subprocess.Popen("cd Scripts& activate.bat& cd ../arcreg& python manage.py runserver %s:%d --insecure&"%(a,port),shell=True)
+	p = subprocess.Popen("cd arc_registration& cd Scripts& activate.bat& cd ../arcreg& python manage.py runserver %s:%d --insecure&"%(a,port),shell=True)
 	p.communicate()
 
 def check(port):

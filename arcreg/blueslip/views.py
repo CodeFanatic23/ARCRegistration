@@ -136,7 +136,7 @@ def add(request):
 				return HttpResponse(json.dumps(context),content_type="application/json")
 
 		else:
-			return HttpResponse("<title>Warning</title><style>body{background-color:#F0D8D8;</style><h1 style='border: 1px solid;font-family:Helvetica;background-color:#f7f7f7;'>Bad Request...<p><strong>WARNING!</strong><br>Sending Too many bad requests will result in deregistration</p></h1>")		
+			return HttpResponse("<title>Warning</title><link href='/static/css/bootstrap.min.css' rel='stylesheet'><style>body{background-color:#F0D8D8;</style><div class='container'><h1 style='border: 1px solid;font-family:Helvetica;background-color:#f7f7f7;'>Bad Request...<p><strong>WARNING!</strong><br>Sending Too many bad requests will result in deregistration</p></h1></div>")		
 	except Exception as e:
 		print(e)
 
@@ -223,7 +223,7 @@ def remove(request):
 					}
 					return HttpResponse(json.dumps(context),content_type="application/json")
 		else:
-			return HttpResponse("<title>Warning</title><style>body{background-color:#F0D8D8;</style><h1 style='border: 1px solid;font-family:Helvetica;background-color:#f7f7f7;'>Bad Request...<p><strong>WARNING!</strong><br>Sending Too many bad requests will result in deregistration</p></h1>")
+			return HttpResponse("<title>Warning</title><link href='/static/css/bootstrap.min.css' rel='stylesheet'><style>body{background-color:#F0D8D8;</style><div class='container'><h1 style='border: 1px solid;font-family:Helvetica;background-color:#f7f7f7;'>Bad Request...<p><strong>WARNING!</strong><br>Sending Too many bad requests will result in deregistration</p></h1></div>")		
 	except Exception as e:
 				print(e)
 
@@ -298,9 +298,9 @@ def home(request):
 				
 					info = ''
 					if str(request.user).lower() in clashCheckers:
-						info = '<title>Error</title><h1>Student is either not eligible(ID not found).Please contact ARC for more information.<br><a href="/2638hjsbd3245347">Go back</a>'
+						info = '<title>Error</title> <link href="/static/css/bootstrap.min.css" rel="stylesheet"><script>function redirect(){var url = "/2638hjsbd3245347";window.location = url;}</script><h1>Student is not eligible(ID not found).Make sure you entered correct <strong>BITSID</strong>.BITSID is 20XXXXPSXXXG.<br>Please contact ARC for more information.<br><button type="button" class="btn btn-danger" onClick="redirect();">Go Back</button>'
 					else:
-						info = '<title>Error</title><h1>Student is either not eligible(ID not found).Please contact ARC for more information.'
+						info = '<title>Error</title> <link href="/static/css/bootstrap.min.css" rel="stylesheet"><h1>Student is not eligible(ID not found).Make sure you entered correct <strong>BITSID</strong>.BITSID is 20XXXXPSXXXG.<br>Please contact ARC for more information.'
 					return HttpResponse(info)
 			else:
 				obj = Registered_User.objects.get(user__username__iexact=request.user)
@@ -428,7 +428,7 @@ def adelete(request,id):
 			print("Deleted:",a.course_title,"ID:",a.ID_no)
 			return HttpResponseRedirect("/status/")
 		else:
-			return HttpResponse("<title>Error</title><h1>You do not have sufficient permissions to perform this operation")
+			return HttpResponse("<title>Error</title><link href='/static/css/bootstrap.min.css' rel='stylesheet'><h1>You do not have sufficient permissions to perform this operation")
 
 	except Exception as e:
 		traceback.print_exc()
@@ -445,7 +445,7 @@ def rdelete(request,id):
 				print("Deleted:",a.course_title,"ID:",a.ID_no)
 				return HttpResponseRedirect("/status/")
 			else:
-				return HttpResponse("<title>Error</title><h1>You do not have sufficient permissions to perform this operation")
+				return HttpResponse("<title>Error</title><link href='/static/css/bootstrap.min.css' rel='stylesheet'><h1>You do not have sufficient permissions to perform this operation")
 
 		except Exception as e:
 			traceback.print_exc()
@@ -467,24 +467,76 @@ def clash(request):
 			print("Deleted user")
 			return HttpResponseRedirect('/home/')
 		else:
-			return HttpResponse("<title>Error</title><h1>You do not have sufficient permissions to perform this operation")	
+			return HttpResponse("<title>Error</title><link href='/static/css/bootstrap.min.css' rel='stylesheet'><h1>You do not have sufficient permissions to perform this operation")	
 	except Exception as e:
 		print(e)
 		pass
-	
+def buildWeekInfo(info,formatted):
+	days = {'M':'Monday','T':'Tuesday','W':'Wednesday','TH':'Thursday','F':'Friday','S':'Saturday'}
+	pat = info.class_pattern
+
+	if pat == 'MWF':
+		formatted[days['M']][info.mtg_start_time] = info
+		formatted[days['W']][info.mtg_start_time] = info
+		formatted[days['F']][info.mtg_start_time] = info
+	elif pat == 'TTHS':
+		formatted[days['T']][info.mtg_start_time] = info
+		formatted[days['TH']][info.mtg_start_time] = info
+		formatted[days['S']][info.mtg_start_time] = info
+	elif pat in ['M','W','F','T','TH','S']:
+		formatted[days[pat]][info.mtg_start_time] = info
+	elif pat == 'MW':
+		formatted[days['M']][info.mtg_start_time] = info
+		formatted[days['W']][info.mtg_start_time] = info
+	elif pat == 'MF':
+		formatted[days['M']][info.mtg_start_time] = info
+		formatted[days['F']][info.mtg_start_time] = info
+	elif pat == 'WF':
+		formatted[days['W']][info.mtg_start_time] = info
+		formatted[days['F']][info.mtg_start_time] = info
+	elif pat == 'TTH':
+		formatted[days['T']][info.mtg_start_time] = info
+		formatted[days['TH']][info.mtg_start_time] = info
+	elif pat == 'TS':
+		formatted[days['T']][info.mtg_start_time] = info
+		formatted[days['S']][info.mtg_start_time] = info
+	elif pat == 'THS':
+		formatted[days['TH']][info.mtg_start_time] = info
+		formatted[days['S']][info.mtg_start_time] = info
+
+
+def formatTTData(data):
+	from collections import defaultdict
+	formatted = defaultdict(dict)
+	for i in data:
+		if i != None:
+			buildWeekInfo(i,formatted)
+	for i in formatted:
+		print(i,"\t",end="")
+		print(printDict(formatted[i]))
+	return formatted
+
+def printDict(dictionary):
+	for i in dictionary:
+		print(dictionary[i].course_title +"\t|",end="")
+
 @login_required
 def timetable(request):
 	try:
 		obj = Registered_User.objects.get(user__username__iexact=request.user)
-		chk = request.session['chk']	
+		chk = request.session['chk']
+		formatted = formatTTData(getMyData(obj.ID_no,request.user,chk))
+	
 		context = {
-		'data':getMyData(obj.ID_no,request.user,chk),
+		'data':formatted,
+		'bitsID':obj.ID_no,
 		}
-
 		return render(request,"tt.html",context)
 	except Exception as e:
 		print(e)
 		return HttpResponseRedirect('/home')
+
+
 
 def str_to_bool(s):
     if s == 'True':
@@ -513,9 +565,8 @@ def getMyData(ID,uid,checks):
 				#print("|",i.Course_ID,"\t|",i.Lecture_Section_No,"\t|",i.Practical_Section_No,"\t|",i.Tutorial_Section_No,"\t|")
 				
 				my_data = my_data + getDataFromTT(i.Course_ID,i.Lecture_Section_No,i.Tutorial_Section_No,i.Practical_Section_No)
-				# getDataFromTT(i.Course_ID,i.Practical_Section_No)
-				# getDataFromTT(i.Course_ID,i.Tutorial_Section_No)
-
+				
+		#else only courses currently being added or removed courses will be in my_data
 		for i in rem:
 			print("REMOVNG--------------")
 			my_data = updateOwnTimeTable(i,my_data,False)		#False for removing

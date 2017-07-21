@@ -1,58 +1,97 @@
 {% extends "base_al.html" %}
+{% load custom_tags %}
 {% block content %}
-<!-- <table>
-{% for i,j in combined.items %}
-<thead>
-<tr>
-	<th>{{i}}</th>
-	</tr>
-	</thead>
-	{% for k in j %}
-	<tbody>
-	{% for o in k %}
-	<tr>
-		<td>{{o}}</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-	{% endfor %}
+<style>
+  .timetable ul.room-timeline li:first-child .time-entry {
+    height: 112px;
+}
+.timetable ul.room-timeline li .time-entry {
+    height: 112px;
+}
+.timetable aside li, .timetable time li {
+    height: 112px;
+}
+.timetable aside {
+  width:13%;
+}
+.timetable section {
+  width:87%;
+}
+.timetable{
+  margin-top: -10px;
+  background-color: #EFEFEF;
+}
+.time-entry{
+  font-size:67%;
+  color: black !important;
+  font-weight: bold;
+  background-color: #eaa5a6 !important;
+  padding: 0 2px !important;
+}
 
-{% endfor %}
-</table> -->
-<div class="table-responsive">
-            <table class="table table-bordered table-hover table-striped">
-            
-              <thead>
-                <tr>
-                  
-                  <th>Course Title</th>
-                  <th>Starts</th>
-                  <th>Ends</th>
-                  <th>Days</th>
-                  <th>Place</th>
-                  <th>Section</th>
-                  <th>Instructor</th>
+</style>
 
-                </tr>
-              </thead>
-              {% for i in data %}
-              <tbody>
-             
-              <tr>
-              <td>{{i.course_title}}</td>
-              <td>{{i.mtg_start_time}}</td>
-              <td>{{i.end_time}}</td>
-              <td>{{i.class_pattern}}</td>
-              <td>{{i.room}}</td>
-              <td>{{i.Section}}</td>
-              <td>{{i.display_name}}</td>
-              	
-           
-              </tr>
-              {% endfor %}
-              </tbody>
-            
-            </table>
-          </div>
+    <div class="timetable" id="tt"></div>
+    <script>
+      var timetable = new Timetable();
+
+      timetable.setScope(8,22);
+      
+      //timetable.addLocations(['Rotterdam', 'Madrid', 'Los Angeles', 'London', 'New York', 'Jakarta', 'Tokyo']);
+      timetable.addLocations(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']);
+    
+      {% for mykey in data|dictKeys %}
+      {% for x in data|getkeyValues:mykey %}
+  
+        timetable.addEvent('{{x.course_title}} ({{x.room}}) {{x.display_name}} {{x.Section}}', '{{mykey}}', new Date({% now 'Y' %},{% now 'm' %},{% now 'd' %},{{x.mtg_start_time|date:"H"}},{{x.mtg_start_time|date:"i"}}), new Date({% now 'Y' %},{% now 'm' %},{% now 'd' %},{{x.end_time|date:"H"}},{{x.end_time|date:"i"}}));
+     {% endfor %}
+    {% endfor %}
+     
+
+      var renderer = new Timetable.Renderer(timetable);
+      renderer.draw('.timetable');
+    </script>
+
+<button type="button" class="btn btn-danger" id="export">Export as Image</button>
+  <script>
+
+     $(document).ready(function() {
+  $("#export").click(function(){
+var bigCanvas = $("<div>").appendTo('body');
+var scaledElement = $("#tt").clone()
+.css({
+  'transform': 'scale(2,2)',
+  'transform-origin': '0 0'
+})
+.appendTo(bigCanvas);
+
+var oldWidth = scaledElement.width();
+var oldHeight = scaledElement.height();
+
+var newWidth = oldWidth * 2;
+var newHeight = oldHeight * 3;
+
+bigCanvas.css({
+  'width': newWidth,
+  'height': newHeight
+})
+
+html2canvas(bigCanvas, {
+  onrendered: function(canvasq) {
+    var myImage = canvasq.toDataURL();
+    var download = document.createElement('a');
+    download.href = myImage;
+    download.download = '{{bitsID}}-TT.png';
+    download.click();
+    bigCanvas.remove() 
+  }
+});
+
+  });
+  $('html, body').animate({
+                    scrollTop: $("#export").offset().top
+                }, 100);
+});
+  </script>  
 
 {% endblock %}

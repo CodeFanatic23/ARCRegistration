@@ -320,9 +320,8 @@ admin.site.register(Registered_User,UserDataAdmin)
 
 class InstructionAdmin(admin.ModelAdmin):
 	list_display=['instruction']
-
+	list_display_links=['instruction']
 	model = Instruction
-	list_editable=['instruction']
 
 admin.site.register(Instruction,InstructionAdmin)
 
