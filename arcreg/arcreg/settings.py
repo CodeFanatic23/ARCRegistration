@@ -9,8 +9,9 @@ https://docs.djangoproject.com/en/1.9/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
-
+import dj_database_url
 import os
+from blueslip.credentials import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,16 +24,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '@@aa_o0&p)eiko-@8k(4b@qzj=f%r_h!uiu*i1nore7ymu2gl!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
 EMAIL_USE_SSL = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = 'yoursamplemail@gmail.com'
-EMAIL_HOST_PASSWORD = '****'
-DEFAULT_FROM_EMAIL = 'yoursamplemail@gmail.com'
+EMAIL_HOST_USER = HOST_EM
+EMAIL_HOST_PASSWORD = PASS
+DEFAULT_FROM_EMAIL = HOST_EM
 #DEFAULT_TO_EMAIL = 'Default Mail TO ID'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
@@ -56,6 +57,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blueslip',
+    'prefslip',
     'upload_sheet',
     'registration',
     'crispy_forms',
@@ -102,13 +104,28 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'arcbits',
+#         'USER': 'postgres',
+#         'PASSWORD': 'test',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
 
 MEDIA_URL = '/media/'
-
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media")
 
 STATICFILES_DIRS = [

@@ -64,3 +64,9 @@ class RegistrationForm(forms.Form):
     receive_news = forms.BooleanField(required=False, label='I want to receive news and special offers')
     agree_toc = forms.BooleanField(required=True, label='I agree with the Terms and Conditions')
 
+class AvailForm(forms.Form):
+	CHOICES = (('1',1),
+			('2',2),
+			('3',3),
+			('4',4))
+	priority = forms.ChoiceField(choices=CHOICES,required=True)

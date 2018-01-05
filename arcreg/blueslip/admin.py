@@ -4,297 +4,43 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from .models import *
 from .forms import *
+from upload_sheet.models import Time_Table_Semester_Wise
+import csv
+import xlwt
+from django.utils.encoding import smart_str
+import openpyxl
+from openpyxl.utils import get_column_letter
+from .export import *
 
 # Register your models here.
 class RemoveCasesAdmin(admin.ModelAdmin):
-	list_display=['name','ID_no','course_no','course_id','class_nbr','course_title','lecture_no','tutorial_no','practical_no']
+	list_display=['name','ID_no','course_no','course_id','class_nbr','course_title','Section']
 	search_fields = ['name','ID_no','course_title','class_nbr']
-	actions = ['export_xls','export_xlsx','export_csv']
+	#actions = ['export_xls','export_xlsx','export_csv']
+
+	def Section(self,obj):
+		return 'L' + obj.lecture_no + ' T' + obj.tutorial_no + ' P' + obj.practical_no + ' ' + obj.graded_comp + ' ' + obj.project_section
+	# For refactoring
+	rem = ExportRemove()
+	funcs = {'export_xls':rem.export_csv,'export_csv':rem.export_xlsx,'export_xlsx':rem.export_xls}
+	actions = [funcs['export_xls'],funcs['export_xlsx'],funcs['export_csv']]
 	
-	def export_csv(modeladmin, request, queryset):
-		import csv
-		from django.utils.encoding import smart_str
-		response = HttpResponse(content_type='text/csv')
-		response['Content-Disposition'] = 'attachment; filename=REMOVE_CASES.csv'
-		writer = csv.writer(response, csv.excel)
-		response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
-		writer.writerow([
-		    smart_str(u"ID"),
-		    smart_str(u"Name"),
-		    smart_str(u"ID_no"),
-		    smart_str(u"Course ID"),
-		    smart_str(u"Class No."),
-		    smart_str(u"Course Title"),
-		    smart_str(u"Lecture"),
-		    smart_str(u"Tutorial"),
-		    smart_str(u"Practical"),
-		])
-		for obj in queryset:
-		    writer.writerow([
-		        smart_str(obj.pk),
-		        smart_str(obj.name),
-		        smart_str(obj.ID_no),
-		        smart_str(obj.course_id),
-		        smart_str(obj.class_nbr),
-		        smart_str(obj.course_title),
-		        smart_str(obj.lecture_no),
-		        smart_str(obj.tutorial_no),
-		        smart_str(obj.practical_no),
-		    ])
-		return response
-	export_csv.short_description = u"Export CSV"
-
-	def export_xls(modeladmin, request, queryset):
-		import xlwt
-		response = HttpResponse(content_type='application/ms-excel')
-		response['Content-Disposition'] = 'attachment; filename=REMOVE_CASES.xls'
-		wb = xlwt.Workbook(encoding='utf-8')
-		ws = wb.add_sheet("REMOVE_CASES")
-
-		row_num = 0
-
-		columns = [
-		    (u"ID", 2000),
-		    (u"Name", 6000),
-		    (u"ID No.", 8000),
-		    (u"Course ID", 8000),
-		    (u"Class No.", 8000),
-		    (u"Course Title", 8000),
-		    (u"Lecture", 8000),
-		    (u"Tutorial", 8000),
-		    (u"Practical", 8000),
-		]
-
-		font_style = xlwt.XFStyle()
-		font_style.font.bold = True
-
-		for col_num in range(len(columns)):
-		    ws.write(row_num, col_num, columns[col_num][0], font_style)
-		    # set column width
-		    ws.col(col_num).width = columns[col_num][1]
-
-		font_style = xlwt.XFStyle()
-		font_style.alignment.wrap = 1
-
-		for obj in queryset:
-		    row_num += 1
-		    row = [
-		        obj.pk,
-		        obj.name,
-		        obj.ID_no,
-		        obj.course_id,
-		        obj.class_nbr,
-		        obj.course_title,
-		        obj.lecture_no,
-		        obj.tutorial_no,
-		        obj.practical_no,
-		    ]
-		    for col_num in range(len(row)):
-		        ws.write(row_num, col_num, row[col_num], font_style)
-		        
-		wb.save(response)
-		return response
-
-	export_xls.short_description = u"Export XLS"
-	def export_xlsx(modeladmin, request, queryset):
-		import openpyxl
-		from openpyxl.cell import get_column_letter
-		response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-		response['Content-Disposition'] = 'attachment; filename=REMOVE_CASES.xlsx'
-		wb = openpyxl.Workbook()
-		ws = wb.get_active_sheet()
-		ws.title = "REMOVE_CASES"
-
-		row_num = 0
-
-		columns = [
-		    (u"ID", 15),
-		    (u"Name", 70),
-		    (u"ID No.", 70),
-		    (u"Course ID", 70),
-		    (u"Class No.", 70),
-		    (u"Course Title", 70),
-		    (u"Lecture", 70),
-		    (u"Tutorial", 70),
-		    (u"Practical", 70),
-		]
-
-		for col_num in range(len(columns)):
-		    c = ws.cell(row=row_num + 1, column=col_num + 1)
-		    c.value = columns[col_num][0]
-		    c.style.font.bold = True
-		    # set column width
-		    ws.column_dimensions[get_column_letter(col_num+1)].width = columns[col_num][1]
-
-		for obj in queryset:
-		    row_num += 1
-		    row = [
-		        obj.pk,
-		        obj.name,
-		        obj.ID_no,
-		        obj.course_id,
-		        obj.class_nbr,
-		        obj.course_title,
-		        obj.lecture_no,
-		        obj.tutorial_no,
-		        obj.practical_no,
-		    ]
-		    for col_num in range(len(row)):
-		        c = ws.cell(row=row_num + 1, column=col_num + 1)
-		        c.value = row[col_num]
-		        c.style.alignment.wrap_text = True
-
-		wb.save(response)
-		return response
-
-	export_xlsx.short_description = u"Export XLSX"
+	
 	model=Remove
 
 admin.site.register(Remove,RemoveCasesAdmin)
 
 class AddCasesAdmin(admin.ModelAdmin):
-	list_display=['name','ID_no','course_no','course_id','class_nbr','course_title','lecture_no','tutorial_no','practical_no']
+	list_display=['name','ID_no','course_no','course_id','class_nbr','course_title','Section']
 	search_fields = ['name','ID_no','course_title','class_nbr']
 	
-	actions = ['export_xls','export_xlsx','export_csv']
+	def Section(self,obj):
+		return 'L' + obj.lecture_no + ' T' + obj.tutorial_no + ' P' + obj.practical_no + ' ' + obj.graded_comp + ' ' + obj.project_section
+	add = ExportAdd()
+	funcs = {'export_xls':add.export_csv,'export_csv':add.export_xlsx,'export_xlsx':add.export_xls}
+	actions = [funcs['export_xls'],funcs['export_xlsx'],funcs['export_csv']]
 	
-	def export_csv(modeladmin, request, queryset):
-		import csv
-		from django.utils.encoding import smart_str
-		response = HttpResponse(content_type='text/csv')
-		response['Content-Disposition'] = 'attachment; filename=ADD_CASES.csv'
-		writer = csv.writer(response, csv.excel)
-		response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
-		writer.writerow([
-		    smart_str(u"ID"),
-		    smart_str(u"Name"),
-		    smart_str(u"ID_no"),
-		    smart_str(u"Course ID"),
-		    smart_str(u"Class No."),
-		    smart_str(u"Course Title"),
-		    smart_str(u"Lecture"),
-		    smart_str(u"Tutorial"),
-		    smart_str(u"Practical"),
-		])
-		for obj in queryset:
-		    writer.writerow([
-		        smart_str(obj.pk),
-		        smart_str(obj.name),
-		        smart_str(obj.ID_no),
-		        smart_str(obj.course_id),
-		        smart_str(obj.class_nbr),
-		        smart_str(obj.course_title),
-		        smart_str(obj.lecture_no),
-		        smart_str(obj.tutorial_no),
-		        smart_str(obj.practical_no),
-		    ])
-		return response
-	export_csv.short_description = u"Export CSV"
-
-	def export_xls(modeladmin, request, queryset):
-		import xlwt
-		response = HttpResponse(content_type='application/ms-excel')
-		response['Content-Disposition'] = 'attachment; filename=ADD_CASES.xls'
-		wb = xlwt.Workbook(encoding='utf-8')
-		ws = wb.add_sheet("ADD_CASES")
-
-		row_num = 0
-
-		columns = [
-		    (u"ID", 2000),
-		    (u"Name", 6000),
-		    (u"ID No.", 8000),
-		    (u"Course ID", 8000),
-		    (u"Class No.", 8000),
-		    (u"Course Title", 8000),
-		    (u"Lecture", 8000),
-		    (u"Tutorial", 8000),
-		    (u"Practical", 8000),
-		]
-
-		font_style = xlwt.XFStyle()
-		font_style.font.bold = True
-
-		for col_num in range(len(columns)):
-		    ws.write(row_num, col_num, columns[col_num][0], font_style)
-		    # set column width
-		    ws.col(col_num).width = columns[col_num][1]
-
-		font_style = xlwt.XFStyle()
-		font_style.alignment.wrap = 1
-
-		for obj in queryset:
-		    row_num += 1
-		    row = [
-		        obj.pk,
-		        obj.name,
-		        obj.ID_no,
-		        obj.course_id,
-		        obj.class_nbr,
-		        obj.course_title,
-		        obj.lecture_no,
-		        obj.tutorial_no,
-		        obj.practical_no,
-		    ]
-		    for col_num in range(len(row)):
-		        ws.write(row_num, col_num, row[col_num], font_style)
-		        
-		wb.save(response)
-		return response
-
-	export_xls.short_description = u"Export XLS"
-	def export_xlsx(modeladmin, request, queryset):
-		import openpyxl
-		from openpyxl.cell import get_column_letter
-		response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-		response['Content-Disposition'] = 'attachment; filename=ADD_CASES.xlsx'
-		wb = openpyxl.Workbook()
-		ws = wb.get_active_sheet()
-		ws.title = "ADD_CASES"
-
-		row_num = 0
-
-		columns = [
-		    (u"ID", 15),
-		    (u"Name", 70),
-		    (u"ID No.", 70),
-		    (u"Course ID", 70),
-		    (u"Class No", 70),
-		    (u"Course Title", 70),
-		    (u"Lecture", 70),
-		    (u"Tutorial", 70),
-		    (u"Practical", 70),
-		]
-
-		for col_num in range(len(columns)):
-		    c = ws.cell(row=row_num + 1, column=col_num + 1)
-		    c.value = columns[col_num][0]
-		    c.style.font.bold = True
-		    # set column width
-		    ws.column_dimensions[get_column_letter(col_num+1)].width = columns[col_num][1]
-
-		for obj in queryset:
-		    row_num += 1
-		    row = [
-		        obj.pk,
-		        obj.name,
-		        obj.ID_no,
-		        obj.course_id,
-		        obj.class_nbr,
-		        obj.course_title,
-		        obj.lecture_no,
-		        obj.tutorial_no,
-		        obj.practical_no,
-		    ]
-		    for col_num in range(len(row)):
-		        c = ws.cell(row=row_num + 1, column=col_num + 1)
-		        c.value = row[col_num]
-		        c.style.alignment.wrap_text = True
-
-		wb.save(response)
-		return response
-
-	export_xlsx.short_description = u"Export XLSX"
+	
 	model=Add
 
 admin.site.register(Add,AddCasesAdmin)
@@ -362,7 +108,6 @@ class Generated_UserAdmin(admin.ModelAdmin):
 		return False
 
 	def export_xls(modeladmin, request, queryset):
-		import xlwt
 		response = HttpResponse(content_type='application/ms-excel')
 		response['Content-Disposition'] = 'attachment; filename=BULK_USERS.xls'
 		wb = xlwt.Workbook(encoding='utf-8')
@@ -402,8 +147,6 @@ class Generated_UserAdmin(admin.ModelAdmin):
 
 	export_xls.short_description = u"Export XLS"
 	def export_xlsx(modeladmin, request, queryset):
-		import openpyxl
-		from openpyxl.cell import get_column_letter
 		response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 		response['Content-Disposition'] = 'attachment; filename=BULK_USERS.xlsx'
 		wb = openpyxl.Workbook()
@@ -421,7 +164,7 @@ class Generated_UserAdmin(admin.ModelAdmin):
 		for col_num in range(len(columns)):
 		    c = ws.cell(row=row_num + 1, column=col_num + 1)
 		    c.value = columns[col_num][0]
-		    c.style.font.bold = True
+		    c.font = c.font.copy(bold = True)
 		    # set column width
 		    ws.column_dimensions[get_column_letter(col_num+1)].width = columns[col_num][1]
 
@@ -436,7 +179,7 @@ class Generated_UserAdmin(admin.ModelAdmin):
 		    for col_num in range(len(row)):
 		        c = ws.cell(row=row_num + 1, column=col_num + 1)
 		        c.value = row[col_num]
-		        c.style.alignment.wrap_text = True
+		        c.alignment = c.alignment.copy(wrap_text = True)
 
 		wb.save(response)
 		return response
@@ -444,8 +187,6 @@ class Generated_UserAdmin(admin.ModelAdmin):
 	export_xlsx.short_description = u"Export XLSX"
 
 	def export_csv(modeladmin, request, queryset):
-		import csv
-		from django.utils.encoding import smart_str
 		response = HttpResponse(content_type='text/csv')
 		response['Content-Disposition'] = 'attachment; filename=BULK_USERS.csv'
 		writer = csv.writer(response, csv.excel)
@@ -474,6 +215,12 @@ class ControlAdmin(admin.ModelAdmin):
 			return False
 		else:
 			return True
+class CourseSelectorAdmin(admin.ModelAdmin):
+	list_display = ['discipline']
+	model = Discipline
+
+	
+admin.site.register(Discipline,CourseSelectorAdmin)
 admin.site.register(Control,ControlAdmin)
 
 admin.site.register(Generated_User,Generated_UserAdmin)

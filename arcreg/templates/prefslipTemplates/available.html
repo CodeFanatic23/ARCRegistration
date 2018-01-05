@@ -1,0 +1,30 @@
+{% extends 'material/base_al.html' %}
+{% load material_form %}
+{% block content %}
+{% include 'material/includes/material_css.html' %}
+ {% if submit_status == False %}
+    <script type="text/javascript" src="/static/js/ajaxm.js"></script>
+    {% endif %}
+{% if submit_status == False %}
+
+     <div class="mdl-card__title mdl-card--expand mdl-color--teal-100">
+                <form method="POST" id="avail_form" action="">
+              {% csrf_token %}
+              Available Courses<br>
+              <select name="available" id="pref">
+              {% for i in courses %}      
+                <option value="{{i.Course_id}},{{i.course_title}},{{i.class_nbr}},{{i.Subject}} {{i.catalog_course_no}}">{{i.course_title}}</option>
+              {% endfor %}
+                </select>
+
+              {% form form=avail %}{% endform %}
+              <br>
+              <button type="submit" name="_submit" class="btn">ADD</button>
+          </form>
+              </div>
+  {% else %}
+  <div class="mdl-card__title mdl-card--expand mdl-color--white-300">
+      <h2 >You have already submitted.Please Contact ARC for any help.</h2>
+      </div>
+    {% endif %}
+{% endblock %}

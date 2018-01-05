@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from blueslip.views import *
-
+from material.frontend import urls as frontend_urls
+from prefslip import urls as pref_urls
 
 urlpatterns = [
     url(r'^arcbitscp/', admin.site.urls),
@@ -33,6 +34,9 @@ urlpatterns = [
     url(r'^remove/$', remove, name='remove'),
     url(r'^status/$', status, name='status'),
     url(r'^instructions/$', instructions, name='instructions'),
+    url(r'^mat/$', mat, name='mat'),
+    url(r'', include(frontend_urls)),
+    url(r'', include(pref_urls)),
  	url(r'',include('registration.backends.simple.urls')),
 ]
 

@@ -4,10 +4,27 @@ import os,re
 from .models import *
 from django.db import connection
 from datetime import time,date
-
+FILES = {}
 class Create_database():
 	"create database from the given xls sheet"
 	PATH_XLS_SHEET = os.path.join(os.path.dirname(settings.BASE_DIR),"media","xls_sheets")
+	def check_Media(self):
+
+		files = [ f for f in os.listdir(self.PATH_XLS_SHEET) if os.path.isfile(os.path.join(self.PATH_XLS_SHEET,f)) ]
+		print(files)
+		for file in files:
+			print(file)
+			if 'reg' in file.lower():
+				FILES[1] = file
+			elif 'time' in file.lower():
+				FILES[2] = file
+			elif 'fd' in file.lower():
+				FILES[3] = file
+			elif 'hd' in file.lower():
+				FILES[4] = file
+			elif 'cap' in file.lower():
+				FILES[5] = file
+		return FILES
 	
 	def create_Pre_requisite_senate_database(self,request):
 		Pre_requisite_senate_name = str(re.sub(" ","_",request.FILES['Pre_requisite_senate'].name))
@@ -42,13 +59,13 @@ class Create_database():
 		#name of xls files
 		#TODO: remove first row from capacity.xls and than change the code
 
-		Capacity_name = str(re.sub(" ","_",request.FILES['Capacity'].name))
+		Capacity_name = FILES[5]
 		
 		#deleting all enteries in database
 		Capacity.objects.all().delete()
 
-		capacity_sheet_path = os.path.join(self.PATH_XLS_SHEET,"Capacity")
-		book = xlrd.open_workbook(os.path.join(capacity_sheet_path,Capacity_name),logfile=open(os.devnull, 'w'))
+		capacity_sheet_path = os.path.join(self.PATH_XLS_SHEET,Capacity_name)
+		book = xlrd.open_workbook(capacity_sheet_path,logfile=open(os.devnull, 'w'))
 		first_sheet = book.sheet_by_index(0)
 		no_rows = int(first_sheet.cell(0,1).value)
 
@@ -79,14 +96,14 @@ class Create_database():
 
 	def create_FD_priority_number(self,request):
 		#name of xls files
-		FD_Priority_number_name = str(re.sub(" ","_",request.FILES['FD_Priority_number'].name))
+		FD_Priority_number_name = FILES[3]
 		
 		#deleting all enteries in database
 		FD_priority_number.objects.all().delete()
 
-		FD_Priority_number_sheet_path = os.path.join(self.PATH_XLS_SHEET,"FD_Priority_number")
+		FD_Priority_number_sheet_path = os.path.join(self.PATH_XLS_SHEET,FD_Priority_number_name)
 
-		book = xlrd.open_workbook(os.path.join(FD_Priority_number_sheet_path,FD_Priority_number_name),logfile=open(os.devnull, 'w'))
+		book = xlrd.open_workbook(FD_Priority_number_sheet_path,logfile=open(os.devnull, 'w'))
 		first_sheet = book.sheet_by_index(0)
 
 		i=1
@@ -94,7 +111,8 @@ class Create_database():
 			try:
 				cells = first_sheet.row_slice(rowx=i,start_colx=0,end_colx=10)
 			except IndexError:
-				break	
+				break
+			#print(type(int(cells[0].value)),str(cells[1].value).strip(),str(cells[2].value).strip(),int(cells[4].value))
 			FD_P = FD_priority_number(erp_id= int(cells[0].value),
 				campus_id=str(cells[1].value).strip(),
 				name=str(cells[2].value).strip(),
@@ -105,14 +123,14 @@ class Create_database():
 	
 	def create_HD_priority_number(self,request):
 		#name of xls files
-		HD_Priority_number_name = str(re.sub(" ","_",request.FILES['HD_Priority_number'].name))
+		HD_Priority_number_name = FILES[4]
 		
 		#deleting all enteries in database
 		HD_priority_number.objects.all().delete()
 
-		HD_Priority_number_sheet_path = os.path.join(self.PATH_XLS_SHEET,"HD_Priority_number")
+		HD_Priority_number_sheet_path = os.path.join(self.PATH_XLS_SHEET,HD_Priority_number_name)
 
-		book = xlrd.open_workbook(os.path.join(HD_Priority_number_sheet_path,HD_Priority_number_name),logfile=open(os.devnull, 'w'))
+		book = xlrd.open_workbook(HD_Priority_number_sheet_path,logfile=open(os.devnull, 'w'))
 		first_sheet = book.sheet_by_index(0)
 
 		i=1
@@ -131,13 +149,13 @@ class Create_database():
 	
 	def create_Time_Table_Semester_Wise(self,request):
 		#name of xls files
-		Time_Table_Semester_Wise_name = str(re.sub(" ","_",request.FILES['Time_Table_Semester_Wise'].name))
+		Time_Table_Semester_Wise_name = FILES[2]
 		
 		#deleting all enteries in database
 		Time_Table_Semester_Wise.objects.all().delete()
-		Time_Table_Semester_Wise_path = os.path.join(self.PATH_XLS_SHEET,"Time_Table_Semester_Wise")
+		Time_Table_Semester_Wise_path = os.path.join(self.PATH_XLS_SHEET,Time_Table_Semester_Wise_name)
 		
-		book = xlrd.open_workbook(os.path.join(Time_Table_Semester_Wise_path,Time_Table_Semester_Wise_name),logfile=open(os.devnull, 'w'))
+		book = xlrd.open_workbook(Time_Table_Semester_Wise_path,logfile=open(os.devnull, 'w'))
 		first_sheet = book.sheet_by_index(0)
 
 		#TODO: remove first row from time_table_semester_wise and than change the code
@@ -240,16 +258,15 @@ class Create_database():
 			i+=1
 
 	def create_Registration_data(self,request):
-		Registration_data_name = str(re.sub(" ","_",request.FILES['Registration_data'].name))
-		Registration_data_name = str(re.sub("\)","",str(re.sub("\(","",Registration_data_name))))
+		Registration_data_name = FILES[1]
 
 		
 		#deleting all enteries in database
 		Registration_data.objects.all().delete()
 
-		Registration_data_sheet_path = os.path.join(self.PATH_XLS_SHEET,"Registration_data")
+		Registration_data_sheet_path = os.path.join(self.PATH_XLS_SHEET,Registration_data_name)
 
-		book = xlrd.open_workbook(os.path.join(Registration_data_sheet_path,Registration_data_name),logfile=open(os.devnull, 'w'))
+		book = xlrd.open_workbook(Registration_data_sheet_path,logfile=open(os.devnull, 'w'))
 		first_sheet = book.sheet_by_index(0)
 
 		i=1
@@ -280,6 +297,7 @@ class Create_database():
 	
 
 	def start_script(self,request):
+		print(self.check_Media())
 		self.create_capacity_database(request)
 		self.create_FD_priority_number(request)
 		self.create_HD_priority_number(request)

@@ -1,15 +1,15 @@
-{% extends "base_al.html" %}
+{% extends "material/base_al.html" %}
 {% load custom_tags %}
 {% block content %}
 <style>
   .timetable ul.room-timeline li:first-child .time-entry {
-    height: 112px;
+    height: 123px;
 }
 .timetable ul.room-timeline li .time-entry {
-    height: 112px;
+    height: 123px;
 }
 .timetable aside li, .timetable time li {
-    height: 112px;
+    height: 123px;
 }
 .timetable aside {
   width:13%;
@@ -18,15 +18,16 @@
   width:87%;
 }
 .timetable{
-  margin-top: -10px;
+  margin-top: -20px;
   background-color: #EFEFEF;
 }
 .time-entry{
   font-size:67%;
   color: black !important;
   font-weight: bold;
-  background-color: #eaa5a6 !important;
+  background-color: lightblue !important;
   padding: 0 2px !important;
+  border-color:cadetblue !important;
 }
 
 </style>
@@ -52,11 +53,11 @@
       renderer.draw('.timetable');
     </script>
 
-<button type="button" class="btn btn-danger" id="export">Export as Image</button>
+
   <script>
 
      $(document).ready(function() {
-  $("#export").click(function(){
+  $(".export").click(function(){
 var bigCanvas = $("<div>").appendTo('body');
 var scaledElement = $("#tt").clone()
 .css({

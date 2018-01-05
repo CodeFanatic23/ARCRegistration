@@ -9,13 +9,16 @@ $(document).ready(function() {
             dataType: 'json',
             url: '/add/', // the file to call
             success: function(data) { // on success..
-                $('#status').css({'background-color':'#ffbcbc','border':'1px dotted black','color':'black','border-radius':'3px','text-align':'center'});
-                $('#status').html(data.add_status); // update the DIV
-                $('#add_form').closest('form').find("input[type=number], numberinput").val("");
-                $('html, body').animate({
-                    scrollTop: $("#status").offset().top
-                }, 500);
-                //$('#status').delay(5000).fadeOut(400);
+                 $('#add_form').closest('form').find("input[type=number], numberinput").val("");
+                showLoading();
+    setTimeout(function () {
+        hideLoading();
+        showDialog({
+                        title: 'Status',
+                        text: data.add_status
+                    });
+    }, 3000);
+                    
     
             },
             error: function(e) { // on error..
@@ -35,22 +38,25 @@ $(document).ready(function() {
             type: $(this).attr('method'), // GET or POST
             url: '/remove/', // the file to call
             success: function(data) { // on success..
-                 $('#status').css({'background-color':'#ffbcbc','border':'1px dotted black','color':'black','border-radius':'3px','text-align':'center'});
-                 $('#status').html(data.remove_status); // update the DIV
-                 $('html, body').animate({
-                    scrollTop: $("#status").offset().top
-                }, 500);
-                //$('#status').delay(5000).fadeOut(400);
-		$.ajax({ // create an AJAX call...
+                $('#remove_form').closest('form').find("input[type=number], numberinput").val("");
+                 showLoading();
+                setTimeout(function () {
+                    hideLoading();
+                    showDialog({
+                            title: 'Status',
+                            text: data.remove_status
+                        });
+                    $.ajax({ // create an AJAX call...
             
-            type: 'GET', // GET or POST
-            url: '/home/', // the file to call
-            success: function(data) { // on success..
-                
-            },
-            error: function(e, x, r) { // on error..
-                           }
-        });
+                        type: 'GET', // GET or POST
+                        url: '/home/', // the file to call
+                        success: function(data) { // on success..
+                            
+                        },
+                        error: function(e, x, r) { // on error..
+                                    }
+                    });
+                }, 3000);
             },
             error: function(e, x, r) { // on error..
               window.location.reload(true);
@@ -63,11 +69,17 @@ $(document).ready(function() {
 
 
 $(document).ready(function() {
-    $('#sub').click(function() { // catch the form's submit event
-       var a = confirm("Submit? There's no going back!");
-  if(a == true)
-{
-        $.ajax({ // create an AJAX call...
+$('.sub').click(function () {
+    showDialog({
+        title: 'Action',
+        text: "Submit? There's no going back!",
+        negative: {
+            title: 'Nope'
+        },
+        positive: {
+            title: 'Yay',
+            onClick: function (e) {
+                        $.ajax({ // create an AJAX call...
             data: $(this).serialize(), // get the form data
             type: $(this).attr('method'), // GET or POST
             url: '/submit/', // the file to call
@@ -79,9 +91,11 @@ $(document).ready(function() {
             window.location.reload(true); 
             }
         });
-    }
-        return false;
+            }
+        }
     });
+});
+
 });
 
 $(document).ready(function(){
@@ -99,4 +113,10 @@ $(document).ready(function(){
                     scrollTop: $("#show_remove").offset().top
                 }, 500);
     });
+});
+
+$(document).ready(function(){
+    console.log("hiding");
+    $("#show_remove").hide();
+    $("#show_add").hide(); 
 });

@@ -9,6 +9,7 @@ from django.db import transaction,IntegrityError
 from django.utils.encoding import python_2_unicode_compatible
 from django.template.loader import render_to_string
 from django.core.mail import get_connection, EmailMultiAlternatives
+from upload_sheet.models import Time_Table_Semester_Wise
 import string
 import random
 
@@ -16,7 +17,7 @@ import random
 
 # Create your models here.
 class Add(models.Model):
-	erp_id = models.IntegerField(blank=True,null=True)
+	erp_id = models.BigIntegerField(blank=True,null=True)
 	ID_no = models.CharField(max_length = 14, blank = False, null = True)
 	name = models.CharField(max_length = 80, blank = False, null = True)
 	PR_no = models.IntegerField(null=True)
@@ -27,14 +28,17 @@ class Add(models.Model):
 	lecture_no = models.CharField(max_length = 2, blank = False, default=0)
 	tutorial_no = models.CharField(max_length = 2,blank = False, default=0)
 	practical_no = models.CharField(max_length = 2,blank = False, default=0)
+	graded_comp = models.CharField(max_length = 2,blank = False,default = 0)
+	project_section = models.CharField(max_length = 2,blank = False,default = 0)
 	userid = models.CharField(max_length=20,blank=False,default='-1')
 	updated = models.BooleanField(default=False)
+	# priority = models.IntegerField(choices=CHOICES,blank=True,default=0)
 
 	class Meta:
 		verbose_name_plural = "Additions"
 
 class Remove(models.Model):
-	erp_id = models.IntegerField(blank=True,null=True)
+	erp_id = models.BigIntegerField(blank=True,null=True)
 	ID_no = models.CharField(max_length = 14, blank = False, null = True)
 	name = models.CharField(max_length = 80, blank = False, null = True)
 	course_no = models.CharField(max_length = 12, blank = False, null = True,default=0)
@@ -44,12 +48,38 @@ class Remove(models.Model):
 	lecture_no = models.CharField(max_length = 2, blank = False, default=0)
 	tutorial_no = models.CharField(max_length = 2,blank = False, default=0)
 	practical_no = models.CharField(max_length = 2,blank = False, default=0)
+	graded_comp = models.CharField(max_length = 2,blank = False,default = 0)
+	project_section = models.CharField(max_length = 2,blank = False,default = 0)
 	userid = models.CharField(max_length=20,blank=False,default='-1')
 	updated = models.BooleanField(default=False)
 
 	class Meta:
 		verbose_name_plural = "Removals"
 
+
+class Available_Courses(models.Model):
+	course_no = models.CharField(max_length = 12, blank = False, null = True,default=0)
+	course_id = models.CharField(max_length = 12, blank = False, null = True,default=0)
+	class_nbr = models.CharField(max_length=10,blank=False,null=True,default=0)
+	course_title = models.CharField(max_length = 80, blank = False, null = True)
+
+	def __str__(self):
+		return self.course_title + ' ' + str(self.class_nbr)
+	
+class Discipline(models.Model):
+	discipline = models.CharField(max_length=20,blank=False,null=True)
+	available = models.ForeignKey(Time_Table_Semester_Wise)
+
+class AddCourses(models.Model):
+	erp_id = models.BigIntegerField(blank=True,null=True)
+	ID_no = models.CharField(max_length = 14, blank = False, null = True)
+	name = models.CharField(max_length = 80, blank = False, null = True)
+	course_no = models.CharField(max_length = 12, blank = False, null = True,default=0)
+	course_id = models.CharField(max_length = 12, blank = False, null = True,default=0)
+	priority = models.IntegerField(null=True,default = 1)
+	class_nbr = models.CharField(max_length=10,blank=False,null=True,default=0)
+	course_title = models.CharField(max_length = 80, blank = False, null = True)
+	userid = models.CharField(max_length=20,blank=False,default='-1')
 
 @python_2_unicode_compatible
 class Registered_User(models.Model):
@@ -136,10 +166,19 @@ signals.pre_save.connect(generate_users,sender=Generate_User)
 def update_email(sender,instance,**kwargs):
 	try:
 		user = instance.user
-		if user.email != "f" + instance.ID_no[0:4] + instance.ID_no[-4:-1] + "@goa.bits-pilani.ac.in":
-			user.email = "f" + instance.ID_no[0:4] + instance.ID_no[-4:-1] + "@goa.bits-pilani.ac.in"
-			user.first_name = instance.name
-			user.save()
+		if int(instance.ID_no[0:4]) > 2016:
+			mail = "f" + instance.ID_no[0:4] + instance.ID_no[-5:-1] + "@goa.bits-pilani.ac.in"
+			if user.email != mail:
+				user.email = mail
+				user.first_name = instance.name
+				user.save()
+		elif int(instance.ID_no[0:4]) <= 2016:
+			mail = "f" + instance.ID_no[0:4] + instance.ID_no[-4:-1] + "@goa.bits-pilani.ac.in"
+			if user.email != mail:
+				user.email = mail
+				user.first_name = instance.name
+				user.save()
+		
 
 		if instance.message == 'Hello!':
 			pass

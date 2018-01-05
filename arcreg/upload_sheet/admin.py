@@ -9,16 +9,17 @@ from django.shortcuts import render
 
 # Register your models here.
 class UploadSheetAdmin(admin.ModelAdmin):
-	list_display = ['Capacity', 'FD_Priority_number', 'HD_Priority_number', 'Pre_requisite_senate', 'Time_Table_Semester_Wise','Registration_data',]
-	# list_editable = ["event_name"]
-	form = UploadSheetForm
+	# list_display = ['Capacity', 'FD_Priority_number', 'HD_Priority_number', 'Time_Table_Semester_Wise','Registration_data',]
+	# # list_editable = ["event_name"]
+	# form = UploadSheetForm
+	list_display = ['added_on']
 
 
 	
 	def save_model(self, request, obj, form, change=False):
 		obj.save()
-		Clean = Clean_folder()
-		Clean.clean(request,obj,form)
+		# Clean = Clean_folder()
+		# Clean.clean(request,obj,form)
 		# try:
 		create_database = Create_database()
 		create_database.start_script(request)
@@ -27,7 +28,15 @@ class UploadSheetAdmin(admin.ModelAdmin):
 		# 	print e
 		# 	return render(request,"about.html")
 		
+class TimeTableAdmin(admin.ModelAdmin):
+	list_display = ['course_title','Course_id','class_nbr']
+	search_fields = ['Course_id','course_title','class_nbr','Section']
+	
+	
+	model = Time_Table_Semester_Wise
 
+	
+admin.site.register(Time_Table_Semester_Wise,TimeTableAdmin)
 
 
 admin.site.register(Upload_file, UploadSheetAdmin)

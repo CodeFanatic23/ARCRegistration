@@ -1,0 +1,89 @@
+{% extends 'material/base_al.html' %}
+{% load material_form %}
+{% block content %}
+{% include 'material/includes/material_css.html' %}
+ {% if submit_status == False %}
+    <script type="text/javascript" src="/static/js/ajaxm.js"></script>
+    {% endif %}
+{% if submit_status == False %}
+<script>
+  $('#status').click(function () {
+    showDialog({
+        title: 'Done!',
+        text: '{{status}}'
+    })
+});
+  </script>
+<div class="mdl-grid demo-content">
+		<div class="demo-charts mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+            <div class="mdl-card__title mdl-card--expand mdl-color--teal-300">
+                <h2 class="mdl-card__title-text"><strong>INSTRUCTIONS</strong></h2> 
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+             {% for a,b in instructions %}
+			   <h6>{{a}}){{b}}</h6>
+			   {% endfor %}
+            </div>
+          </div>
+
+          <div class="demo-cards mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet mdl-grid mdl-grid--no-spacing">
+            <div class="demo-updates mdl-card mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
+              <div class="mdl-card__title mdl-card--expand mdl-color--teal-300">
+                <h2 class="mdl-card__title-text">______________________Add Courses_________________</h2>
+                
+              </div>
+              <div id="show_add" class="mdl-card__supporting-text mdl-color-text--grey-600">
+              	<form method="POST" id="add_form" action="">
+			        {% csrf_token %}
+			        Available Courses<br>
+				      <select name="add_courses" id="add">
+				      {% for i,p in add_dropdown %}      
+				        <option value="{{i}}">{{p}}</option>
+				      {% endfor %}
+				        </select>
+			        {% form form=add %}{% endform %}
+			        <button type="submit" name="_submit" class="btn">ADD</button>
+    			</form>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+                <a href="#" id="add_button" class="mdl-button mdl-js-button mdl-js-ripple-effect">View Courses</a>
+
+              </div>
+            </div>
+            </div>
+          <div class="demo-cards mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet mdl-grid mdl-grid--no-spacing">
+            <div class="demo-updates mdl-card mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
+           		
+              <div class="mdl-card__title mdl-card--expand mdl-color--teal-300">
+     
+                <h2 class="mdl-card__title-text">_________________Remove Courses_________________</h2>
+                
+              </div>
+              <div id="show_remove" class="mdl-card__supporting-text mdl-color-text--grey-600">
+              	<form method="POST" id="remove_form" action="">
+			        {% csrf_token %}
+			        Available Courses<br>
+				      <select name="rem" id="remove">
+				      {% for i,p in rem_dropdown %}      
+				        <option value="{{i}}">{{p}}</option>
+				      {% endfor %}
+				        </select>
+			        {% form form=remove %}{% endform %}
+			        <br>
+			        <button type="submit" name="_submit" class="btn">REMOVE</button>
+    			</form>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+                <a href="#" id="remove_button" class="mdl-button mdl-js-button mdl-js-ripple-effect">View Courses</a>
+
+              </div>
+            </div>
+            </div>
+            </div>
+ </div>
+  {% else %}
+  <div class="mdl-card__title mdl-card--expand mdl-color--white-300">
+      <h2 >You have already submitted.Please Contact ARC for any help.</h2>
+      </div>
+    {% endif %}
+{% endblock %}

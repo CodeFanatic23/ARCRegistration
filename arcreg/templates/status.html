@@ -1,52 +1,88 @@
-{% extends "base_al.html" %}
+{% extends "material/base_al.html" %}
 
 {% block content %}
+<div class="mdl-cell--12-col mdl-grid">
+  <div class="mdl-card__title mdl-card--expand mdl-color--teal-300">
+                <h2 class="mdl-card__title-text"><strong>{{stuobj.name}}@{{stuobj.ID_no}}:~$</strong>_</h2> 
+               
+              </div>
+     </div>
+            {% if not add and not remove %}
+            <div class="mdl-card__title mdl-card--expand mdl-color--teal-100">
+                <h2 class="mdl-card__title-text">No Additions/Removals requested.</h2> 
+              </div>
+            {% endif %}
+{% if add %}
+<div class="mdl-card__title mdl-card--expand mdl-color--teal-100">
+                <h2 class="mdl-card__title-text">ADDITIONS</h2> 
+              </div>
 
-<div class="row">
-	<div class="col-md-6 col-sm-6 col-xs-6" style="text-align: left;text-transform: capitalize;">
-	<p><b>{{stuobj.name}}</b></p></div>
-	<div class="col-md-6 col-sm-6 col-xs-6" style="text-align: right;">
-		<p><b>{{stuobj.ID_no}}</b></p>
-	</div>
-</div>
-<br>
-
-<div class="table-responsive">
-            <table class="table table-bordered table-hover table-striped">
+            <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp mdl-cell--12-col mdl-grid">
               <thead>
                 <tr>
-                  <th>Course Title</th>
-                  <th>Lecture No.</th>
-                  <th>Tutorial No.</th>
-                  <th>Practical No.</th>
+              
+                  <th class="mdl-data-table__cell--non-numeric">Course Title</th>
+                  <th>Class nbr</th>
+                  <th>Section </th>
+                  <th>L</th>
+                  <th>T</th>
+                  <th>P</th>
                   <th>Status</th>
                   <th>Delete</th>
+                  
                 </tr>
               </thead>
               <tbody>
               {% for i in add %}
                 <tr>
-                  <td>{{i.course_title}}</td>
-                  <td>{{i.lecture_no}}</td>
-                  <td>{{i.tutorial_no}}</td>
-                  <td>{{i.practical_no}}</td>
-                  <td>Requested For Addition</td>
-                  <td align="center"><a href="{% url 'home' %}{{i.id}}/adelete/"><span><i class="fa fa-times"></i></span></a></td>
+                  <td class="mdl-data-table__cell--non-numeric">{{i.course_title}}</td>
+                  <td>{{i.class_nbr}}</td>
+                  <td>{{i.graded_comp}}</td>
+                  <td>L{{i.lecture_no}}</td>
+                  <td>T{{i.tutorial_no}}</td>
+                  <td>P{{i.practical_no}}</td>
+                 
+                  <td>Adding<i class="material-icons">slow_motion_video</i></td>
+                  <td align="center"><a href="{% url 'home' %}{{i.id}}/adelete/"><span><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">delete_forever</i></span></a></td>
                 </tr>
                 {% endfor %}
+                </tbody>
+                </table>
+      {% endif %}
+      {% if remove %}
+              <div class="mdl-card__title mdl-card--expand mdl-color--teal-100">
+                <h2 class="mdl-card__title-text">REMOVALS</h2> 
+              </div>
+              <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp mdl-cell--12-col mdl-grid">
+              <thead>
+                <tr>
+                  <th class="mdl-data-table__cell--non-numeric">Course Title</th>
+                  
+                  <th>Class nbr</th>
+                  <th>Section </th>
+                  <th>L</th>
+                  <th>T</th>
+                  <th>P</th>
+                  <th>Status</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
                {% for i in remove %}
                 <tr>
-                 <td>{{i.course_title}}</td>
-	             <td>{{i.lecture_no}}</td>
-	             <td>{{i.tutorial_no}}</td>
-	             <td>{{i.practical_no}}</td>
-	             <td>Requested For Removal</td>
-               <td align="center"><a href="{% url 'home' %}{{i.id}}/rdelete/"><span><i class="fa fa-times"></i></span></a></td>
+                <td>{{i.course_title}}</td>
+                <td>{{i.class_nbr}}</td>
+                <td>{{i.graded_comp}}</td>
+	             <td>L{{i.lecture_no}}</td>
+	             <td>T{{i.tutorial_no}}</td>
+	             <td>P{{i.practical_no}}</td>
+	             <td>Removing<i class="material-icons">slow_motion_video</i></td>
+               <td align="center"><a href="{% url 'home' %}{{i.id}}/rdelete/"><span><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">delete_forever</i></span></a></td>
                 </tr>
                 {% endfor %}
                 
               </tbody>
             </table>
-          </div>
+            {% endif %}
 
 {% endblock %}
