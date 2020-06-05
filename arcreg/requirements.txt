@@ -1,5 +1,5 @@
 dj-database-url==0.4.2
-Django==1.11.3
+Django==1.11.29
 django-crispy-forms==1.6.1
 django-material==1.0.0
 git+git://github.com/CodeFanatic23/django-registration@login
